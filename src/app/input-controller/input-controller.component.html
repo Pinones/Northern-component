@@ -1,0 +1,47 @@
+<form [formGroup]="inputForm" (ngSubmit)="onSubmit()">
+  <div formArrayName="inputs">
+    <!-- New syntax of iterating and using conditions in Angular 18 -->
+    @for (inputControl of inputs.controls; let i=$index; track i) {
+    <div [formGroupName]="i">
+      <label for="{{ i }}">{{ inputControl.value.title }}</label>
+      <input type="text" id="{{ i }}" formControlName="value" />
+    </div>
+
+    <button type="button" (click)="onAddRequiredValidator(i)">Required</button>
+    <button type="button" (click)="onRemoveRequiredValidator(i)">
+      Not Required
+    </button>
+
+    @if(inputControl.get('value')?.hasError('required')){
+    <p style="color: red">This field is now required</p>
+    } @if (!inputControl.get('value')?.hasError('required')) {
+    <p>This field is not required</p>
+    }
+
+    <button type="button" (click)="onRemoveInputField(i)">
+      Remove input field
+    </button>
+    }
+  </div>
+
+  <div>
+    <input type="text" #inputValue />
+    <button
+      type="button"
+      (click)="onAddInputField(inputValue.value); inputValue.value = ''"
+    >
+      Add new field
+    </button>
+  </div>
+
+  @if (isFormValid === false) {
+  <p style="color: red">You need to enter a value for the input</p>
+  }
+
+  <button type="submit">Save form</button>
+
+  @if (form) {
+  <h4>Form value</h4>
+  <p>{{ form }}</p>
+  }
+</form>
